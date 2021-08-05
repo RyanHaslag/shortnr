@@ -29,7 +29,11 @@ class ShortenController extends Controller
         return view('home');
     }
 
-    public function shorten(Request $request) {
+    public function shorten(Request $request): array {
+        return $request->all();
+    }
+
+    private function test() {
         //Test the first 1000 sample entries into the DB
         for($i = 0; $i < 10000; $i++) {
             echo $this->shortenService->shorten($i);

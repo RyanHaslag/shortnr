@@ -26,6 +26,10 @@ class ShortenController extends Controller
      */
     public function index()
     {
+        return view('home');
+    }
+
+    public function shorten(Request $request) {
         //Test the first 1000 sample entries into the DB
         for($i = 0; $i < 10000; $i++) {
             echo $this->shortenService->shorten($i);

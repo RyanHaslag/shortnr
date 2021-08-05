@@ -1,0 +1,16 @@
+/* ./resources/css/app.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    font-family: 'Poppins', serif;
+}
+
+.input {
+    @apply appearance-none rounded-none relative block px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-400 focus:border-green-400 focus:z-10 sm:text-sm;
+}
+
+.select {
+    @apply appearance-none rounded-none relative block w-10/12 px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-400 focus:border-green-400 focus:z-10 sm:text-sm;
+}

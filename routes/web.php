@@ -16,4 +16,5 @@ use App\Http\Controllers\ShortenController;
 */
 
 Route::get('/', [ShortenController::class, 'index']);
+Route::post('/shorten', [ShortenController::class, 'shorten']);
 

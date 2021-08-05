@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\URL;
 use Illuminate\Http\Request;
 
 //Services
@@ -29,8 +30,36 @@ class ShortenController extends Controller
         return view('home');
     }
 
-    public function shorten(Request $request): array {
-        return $request->all();
+    public function shorten(Request $request): string {
+        //Set the default current index to 1 to handle the first record entry into the DB
+        $currentIndex = 1;
+
+        //Validate the incoming full URL provided by the user
+        $request->validate(['fullURL' => 'required | url']);
+        $fullURL = $request->input('fullURL');
+
+        //Check to see if there is a URL record in the DB
+        $latestURL = URL::latest()->first();
+        if($latestURL) {
+            $currentIndex = (int) $latestURL->id + 1;
+        }
+
+        //Create the shortcode for the URL
+        $shortcode = $this->shortenService->shorten($currentIndex);
+
+        //Save the new record to the DB
+        $newURL = new URL();
+        $newURL->shortcode = $shortcode;
+        $newURL->full_url = $fullURL;
+        $newURL->url_title = '';
+        $newURL->nsfw = false;
+        $newURL->visit_count = 0;
+        $saved = $newURL->save();
+
+        return json_encode([
+            'saved' => $saved,
+            'url' => 'http://localhost/' . $newURL->shortcode
+        ]);
     }
 
     private function test() {

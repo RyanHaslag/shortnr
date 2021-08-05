@@ -5,7 +5,15 @@
         <div class="w-1/2 mx-auto">
             <input class="select mx-auto mt-4"  v-model="fullURL"/>
             <button @click="submitURL" class="button block my-4 mx-auto h-10 px-6 w-1/4 cursor-pointer">Submit</button>
-            <h2 class="text-center mt-8 text-green-900 font-bold text-3xl">{{ shortURL }}</h2>
+            <div v-if="shortURL" class="bg-green-100 border-t border-b border-green-500 text-green-700 px-4 py-3" role="alert">
+                <p class="font-bold">Your shortcode is ready!</p>
+                <p class="text-sm">Follow this link to go to your webpage: <a v-bind:href="shortURL" target="_blank" class="font-bold">{{ shortURL }}</a></p>
+            </div>
+            <div v-if="errors" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mx-auto" role="alert">
+                <div v-for="error in errors">
+                    <span v-for="errorText in error" class="top-0 bottom-0 right-0 px-4 py-3">Error: {{ errorText }}</span>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -16,10 +24,12 @@
         data() {
             return {
                 fullURL: null,
-                shortURL: null
+                shortURL: null,
+                errors: null
             }
         },
         mounted() {
+            console.log('mounted.');
         },
         methods: {
             submitURL() {
@@ -30,7 +40,10 @@
                 axios.post("/shorten", {
                     'fullURL': this.fullURL
                 }).then(function (response) {
-                    _this.shortURL = response.data.url;
+                    _this.shortURL = response.data.data;
+                })
+                .catch(function(error) {
+                    _this.errors = error.response.data.errors;
                 });
             }
         }

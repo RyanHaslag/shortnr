@@ -120,7 +120,7 @@ return [
     'timezone' => 'The :attribute must be a valid timezone.',
     'unique' => 'The :attribute has already been taken.',
     'uploaded' => 'The :attribute failed to upload.',
-    'url' => 'The :attribute must be a valid URL.',
+    'url' => 'The link you want to shorten must be a valid URL. Please try again.',
     'uuid' => 'The :attribute must be a valid UUID.',
 
     /*

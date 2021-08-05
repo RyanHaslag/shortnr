@@ -4,11 +4,17 @@ namespace App\Http\Controllers;
 use App\Models\URL;
 use Illuminate\Http\Request;
 
+//Traits
+use App\Traits\ResponseFormatter;
+
 //Services
 use App\Services\ShortenService;
+use Illuminate\Support\Facades\Redirect;
 
 class ShortenController extends Controller
 {
+    use ResponseFormatter;
+
     protected $shortenService;
 
     /**
@@ -28,6 +34,25 @@ class ShortenController extends Controller
     public function index()
     {
         return view('home');
+    }
+
+    public function map($shortURL) {
+        //Validate that the provided short URL is only alphanumeric
+        if(!ctype_alnum($shortURL)) {
+            return view('home')->with($this->viewResponseFormatter(null,'error', "Oops! It looks like something is wrong with your link. Please try again.", null));
+        }
+
+        //Search for the short URL in the database
+        $foundURL = URL::where('shortcode', $shortURL)->first();
+        //If a URL has been found with the provided shortcode, redirect the user
+        if($foundURL) {
+            //todo Check for the NSFW flag boolean on the bonus
+
+            return Redirect::to($foundURL->full_url, 302);
+        }
+
+        //Handle an incorrectly provided shortcode with errors
+        return view('home')->with($this->viewResponseFormatter(null,'error', "We weren't able to find that link! Please try again.", null));
     }
 
     public function shorten(Request $request): string {
@@ -56,17 +81,11 @@ class ShortenController extends Controller
         $newURL->visit_count = 0;
         $saved = $newURL->save();
 
-        return json_encode([
-            'saved' => $saved,
-            'url' => 'http://localhost/' . $newURL->shortcode
-        ]);
-    }
-
-    private function test() {
-        //Test the first 1000 sample entries into the DB
-        for($i = 0; $i < 10000; $i++) {
-            echo $this->shortenService->shorten($i);
-            echo_newline();
+        //Handle errors if the model was not able to be saved
+        if(!$saved) {
+            return view('home')->with($this->viewResponseFormatter(null,'error', "We weren't able to create that link! Please try again.", null));
         }
+
+        return $this->apiResponseFormatter('http://localhost/' . $newURL->shortcode, 'success', '');
     }
 }

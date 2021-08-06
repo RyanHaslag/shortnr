@@ -34,7 +34,7 @@
             }
         },
         mounted() {
-            console.log('mounted.');
+
         },
         methods: {
             submitURL() {

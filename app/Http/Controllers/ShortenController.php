@@ -1,7 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
+
+//Models
 use App\Models\URL;
+
+//Return classes
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 //Traits
@@ -36,6 +44,14 @@ class ShortenController extends Controller
         return view('home');
     }
 
+    /**
+     * Take a provided short URL and find the
+     * corresponding record in the DB to redirect the
+     * user to the full URL
+     *
+     * @param $shortURL
+     * @return Application|Factory|View|RedirectResponse
+     */
     public function map($shortURL) {
         //Validate that the provided short URL is only alphanumeric
         if(!ctype_alnum($shortURL)) {
@@ -61,6 +77,14 @@ class ShortenController extends Controller
         return view('home')->with($this->viewResponseFormatter(null,'error', "We weren't able to find that link! Please try again.", null));
     }
 
+    /**
+     * Take a full URL and generate a shortcode to
+     * be given back to the user. Store NSFW links
+     * with boolean to caution future users who visit the link
+     *
+     * @param Request $request
+     * @return string
+     */
     public function shorten(Request $request): string {
         //Set the default current index to 1 to handle the first record entry into the DB
         $currentIndex = 1;
@@ -83,6 +107,12 @@ class ShortenController extends Controller
         //Create the shortcode for the URL
         $shortcode = $this->shortenService->shorten($currentIndex);
 
+        //Check that the shortcode generated does not match already taken routes by the application
+        if($shortcode == 'top' || $shortcode == 'shorten') {
+            //Increment the index and generate a new shortcode
+            $shortcode = $this->shortenService->shorten($currentIndex + 1);
+        }
+
         //Save the new record to the DB
         $newURL = new URL();
         $newURL->shortcode = $shortcode;
@@ -100,6 +130,12 @@ class ShortenController extends Controller
         return $this->apiResponseFormatter('http://localhost/' . $newURL->shortcode, 'success', '');
     }
 
+    /**
+     * Query for the "top 100" most visited links
+     * and return to the view for display
+     *
+     * @return Application|Factory|View
+     */
     public function top() {
         //Query for the top 100 URL's by view count
         $topURLs = URL::orderBy('visit_count', 'desc')->take(100)->get();

@@ -1,63 +1,65 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Shortnr
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Shortnr is a Laravel URL shortener application!
 
-## About Laravel
+## Installation
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Initialize the applcation by starting Sail
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+```bash
+./vendor/bin/sail up
+```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+*Optionally create an alias for Sail in your bash or zsh profile
 
-## Learning Laravel
+```bash
+alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Migrate all existing database tables
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+sail artisan migrate
+```
 
-## Laravel Sponsors
+Initialize all composer packages required by the project
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+```bash
+sail composer install
+```
 
-### Premium Partners
+Initialize all frontend required packages from NPM
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[CMS Max](https://www.cmsmax.com/)**
+```bash
+sail npm install
+```
 
-## Contributing
+## Challenges of building the URL Shortener
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+1. Deciding on an adequate mechanism to determine the shortest available URL. Utilizing the index of the last entry into the URL table provided the ability to introduce a bijective formula to iterate over the available base character set efficiently to generate the short code.
 
-## Code of Conduct
+2. Deciding how many edge cases should be handled in the given time period was another challenge. I took the approach of handling what would be the most obvious edge cases that could possibly occur and made sure that they were handled. Specifically the edge case of a user generating a shortcode that already matches an existing route used by the application.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+3. Finding an efficient and unobtrusive way of displaying the NSFW modal while still passing the full URL back to the frontend. I opted for passing the full URL to blade and then taking in that full URL as a prop to the Vue component and creating a timeout that would redirect the user through JS.
 
-## Security Vulnerabilities
+4. Error-handling in a clean, uniform manner took some effort to ensure that errors could be passed directly to blade files in as close of the same manner as passing errors back to the JS directly.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Design Decisions
 
-## License
+1. The first major design decision was whether or not to utilize a Vue frontend or going with something less robust such as jQuery. Making a URL shortener doesn't necessarily involve several of the benefits of utilizing a robust JS solution, but it proved to be incredibly beneficial in terms of the speed of development (especially with the NSFW bonus portion).
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+2. Another design decision was how to structure the backend of the project. I opted for creating a service that would handle the actual calculation of the shortest available URL that could be used throughout the application with future development.  I tried to design the backend of the system in a way that would support a more robust feature set.
+
+3. I didn't opt to initially create a full "API" to handle the calls from the frontend. This was purely a decision based on available time to complete the project. With more time, I would definitely consider a more structured solution splitting up the view controllers and a "full-fledged" API.
+
+## Future Improvements
+
+1. The first and most obvious improvement to the application would be to create expirations to the links. Utilizing a base-62 set allows for more available shortcodes than would most likely be necessary, but most links over time would either be forgotten or go completely unused. This would most-likely involve a more robust solution of generating shortest available URLs as old indexes that had smaller short codes would become available again.
+
+2. The second improvement to be made would be to check if a short code has already been generated for the provided URL. This could likely be an actual application design decision whether or not multiple users should share the same links or if they should be unique to the user that generated.
+
+3. The third improvement would be an expansion of frontend displays as the user is inputting URL's. It would be really nice to have an indicator when the user is typing to show when they have typed a valid URL as they are typing.
+
+4. The fourth improvement would be to expand the backend structure to support a full API (potentially including moving more logic out of the controller to further develop a repository/service design pattern.
+
+5. The fifth improvement would be to make the application responsive so that it would be better shown on mobile applications (it was primarily built for larger screen sizes).

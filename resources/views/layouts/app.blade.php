@@ -15,5 +15,10 @@
     @yield('title')
 </head>
 <body>
-        @yield('content')
+    <div class="py-4 pr-12 float-right">
+        <a class="pr-4 text-lg" href="/">Home</a>
+        <a class="text-lg" href="/top">Top 100</a>
+    </div>
+    <div class="clear-both"></div>
+    @yield('content')
 </body>

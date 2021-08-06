@@ -46,7 +46,13 @@ class ShortenController extends Controller
         $foundURL = URL::where('shortcode', $shortURL)->first();
         //If a URL has been found with the provided shortcode, redirect the user
         if($foundURL) {
-            //todo Check for the NSFW flag boolean on the bonus
+            //Check for the NSFW flag
+            if($foundURL->nsfw) {
+                return view('caution')->with(['fullURL' => $foundURL->full_url]);
+            }
+
+            //Increment the view count of the found URL for tracking the top 100 URL's
+            $foundURL->increment('visit_count');
 
             return Redirect::to($foundURL->full_url, 302);
         }
@@ -60,8 +66,13 @@ class ShortenController extends Controller
         $currentIndex = 1;
 
         //Validate the incoming full URL provided by the user
-        $request->validate(['fullURL' => 'required | url']);
+        $request->validate([
+            'fullURL' => 'required | url',
+            'nsfw' => 'boolean'
+        ]);
+
         $fullURL = $request->input('fullURL');
+        $nsfw = $request->input('nsfw');
 
         //Check to see if there is a URL record in the DB
         $latestURL = URL::latest()->first();
@@ -77,7 +88,7 @@ class ShortenController extends Controller
         $newURL->shortcode = $shortcode;
         $newURL->full_url = $fullURL;
         $newURL->url_title = '';
-        $newURL->nsfw = false;
+        $newURL->nsfw = $nsfw;
         $newURL->visit_count = 0;
         $saved = $newURL->save();
 
@@ -87,5 +98,12 @@ class ShortenController extends Controller
         }
 
         return $this->apiResponseFormatter('http://localhost/' . $newURL->shortcode, 'success', '');
+    }
+
+    public function top() {
+        //Query for the top 100 URL's by view count
+        $topURLs = URL::orderBy('visit_count', 'desc')->take(100)->get();
+
+        return view('top')->with(['topURLs' => $topURLs]);
     }
 }

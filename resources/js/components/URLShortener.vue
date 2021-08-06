@@ -4,6 +4,10 @@
         <p class="text-center text-gray-600">Enter the URL that you would like to shorten below to get started!</p>
         <div class="w-1/2 mx-auto">
             <input class="select mx-auto mt-4"  v-model="fullURL"/>
+            <div class="text-center mt-4">
+                <input type="checkbox" id="checkbox" v-model="nsfw">
+                <label for="checkbox">Is this link NSFW?</label>
+            </div>
             <button @click="submitURL" class="button block my-4 mx-auto h-10 px-6 w-1/4 cursor-pointer">Submit</button>
             <div v-if="shortURL" class="bg-green-100 border-t border-b border-green-500 text-green-700 px-4 py-3" role="alert">
                 <p class="font-bold">Your shortcode is ready!</p>
@@ -25,6 +29,7 @@
             return {
                 fullURL: null,
                 shortURL: null,
+                nsfw: false,
                 errors: null
             }
         },
@@ -38,7 +43,8 @@
 
                 let _this = this;
                 axios.post("/shorten", {
-                    'fullURL': this.fullURL
+                    'fullURL': this.fullURL,
+                    'nsfw': this.nsfw
                 }).then(function (response) {
                     _this.shortURL = response.data.data;
                 })

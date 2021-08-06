@@ -4,6 +4,25 @@ Shortnr is a Laravel URL-shortener application!
 
 ## Installation
 
+Docker must be installed and running. PHP 8, Composer, and NPM are required to run the application.
+
+Rename the .env.example file to .env and update the database credentials to allow for Sail to create a MySQL connection
+
+```bash
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=shortnr
+DB_USERNAME=sail
+DB_PASSWORD=password
+```
+
+Initialize all composer packages required by the project
+
+```bash
+composer install
+```
+
 Initialize the application by starting Sail
 
 ```bash
@@ -16,22 +35,22 @@ Initialize the application by starting Sail
 alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
 ```
 
+Generate a new app key for the project
+
+```bash
+ sail artisan key:generate
+```
+
 Migrate all existing database tables
 
 ```bash
 sail artisan migrate
 ```
 
-Initialize all composer packages required by the project
-
-```bash
-sail composer install
-```
-
 Initialize all frontend required packages from NPM
 
 ```bash
-sail npm install
+sail npm install && npm run dev
 ```
 
 ## Challenges of building the URL Shortener

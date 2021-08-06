@@ -1,10 +1,10 @@
 # Shortnr
 
-Shortnr is a Laravel URL shortener application!
+Shortnr is a Laravel URL-shortener application!
 
 ## Installation
 
-Initialize the applcation by starting Sail
+Initialize the application by starting Sail
 
 ```bash
 ./vendor/bin/sail up
@@ -46,7 +46,7 @@ sail npm install
 
 ## Design Decisions
 
-1. The first major design decision was whether or not to utilize a Vue frontend or going with something less robust such as jQuery. Making a URL shortener doesn't necessarily involve several of the benefits of utilizing a robust JS solution, but it proved to be incredibly beneficial in terms of the speed of development (especially with the NSFW bonus portion).
+1. The first major design decision was whether to utilize a Vue frontend or going with something less robust such as jQuery. Making a URL shortener doesn't necessarily involve several of the benefits of utilizing a robust JS solution, but it proved to be incredibly beneficial in terms of the speed of development (especially the NSFW bonus portion).
 
 2. Another design decision was how to structure the backend of the project. I opted for creating a service that would handle the actual calculation of the shortest available URL that could be used throughout the application with future development.  I tried to design the backend of the system in a way that would support a more robust feature set.
 
@@ -54,9 +54,9 @@ sail npm install
 
 ## Future Improvements
 
-1. The first and most obvious improvement to the application would be to create expirations to the links. Utilizing a base-62 set allows for more available shortcodes than would most likely be necessary, but most links over time would either be forgotten or go completely unused. This would most-likely involve a more robust solution of generating shortest available URLs as old indexes that had smaller short codes would become available again.
+1. The first and most obvious improvement to the application would be to create expirations to the links. Utilizing a base-62 set allows for more available shortcodes than would most likely be necessary, but most links over time would either be forgotten or go completely unused. This would most-likely involve a more robust solution of generating the shortest available URLs as old indexes that had smaller short codes would become available again.
 
-2. The second improvement to be made would be to check if a short code has already been generated for the provided URL. This could likely be an actual application design decision whether or not multiple users should share the same links or if they should be unique to the user that generated.
+2. The second improvement to be made would be to check if a short code has already been generated for the provided URL. This could likely be an actual application design decision whether multiple users should share the same links or if they should be unique to the user that generated.
 
 3. The third improvement would be an expansion of frontend displays as the user is inputting URL's. It would be really nice to have an indicator when the user is typing to show when they have typed a valid URL as they are typing.
 

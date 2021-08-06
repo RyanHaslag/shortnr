@@ -97,8 +97,8 @@ return [
     'numeric' => 'The :attribute must be a number.',
     'password' => 'The password is incorrect.',
     'present' => 'The :attribute field must be present.',
-    'regex' => 'The :attribute format is invalid.',
-    'required' => 'The :attribute field is required.',
+    'regex' => 'The link you want to shorten must be a valid URL. Please try again.',
+    'required' => 'You must fill out the field before submitting',
     'required_if' => 'The :attribute field is required when :other is :value.',
     'required_unless' => 'The :attribute field is required unless :other is in :values.',
     'required_with' => 'The :attribute field is required when :values is present.',
@@ -120,7 +120,7 @@ return [
     'timezone' => 'The :attribute must be a valid timezone.',
     'unique' => 'The :attribute has already been taken.',
     'uploaded' => 'The :attribute failed to upload.',
-    'url' => 'The link you want to shorten must be a valid URL. Please try again.',
+    'url' => 'The link you want to shorten must be a valid URL (include "http://" or "https://").',
     'uuid' => 'The :attribute must be a valid UUID.',
 
     /*

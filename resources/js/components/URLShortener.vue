@@ -2,7 +2,7 @@
     <div class="container mx-auto pt-10">
         <h1 class="text-center text-4xl text-green-600 mb-2">Short<span class="font-thin">nr</span></h1>
         <p class="text-center text-gray-600">Enter the URL that you would like to shorten below to get started!</p>
-        <div class="w-1/2 mx-auto">
+        <div class="w-2/3 mx-auto">
             <input class="select mx-auto mt-4"  v-model="fullURL"/>
             <div class="text-center mt-4">
                 <input type="checkbox" id="checkbox" v-model="nsfw">
@@ -15,7 +15,7 @@
             </div>
             <div v-if="errors" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mx-auto" role="alert">
                 <div v-for="error in errors">
-                    <span v-for="errorText in error" class="top-0 bottom-0 right-0 px-4 py-3">Error: {{ errorText }}</span>
+                    <span v-for="errorText in error" class="top-0 bottom-0 right-0 px-4 py-3 text-sm">Error: {{ errorText }}</span>
                 </div>
             </div>
         </div>
@@ -38,6 +38,9 @@
         },
         methods: {
             submitURL() {
+                //Clear any existing errors for the user
+                this.errors = null;
+
                 //Reset the short URL displayed to the user
                 this.shortURL = null;
 

@@ -46,13 +46,13 @@ class ShortenController extends Controller
         $foundURL = URL::where('shortcode', $shortURL)->first();
         //If a URL has been found with the provided shortcode, redirect the user
         if($foundURL) {
+            //Increment the view count of the found URL for tracking the top 100 URL's
+            $foundURL->increment('visit_count');
+
             //Check for the NSFW flag
             if($foundURL->nsfw) {
                 return view('caution')->with(['fullURL' => $foundURL->full_url]);
             }
-
-            //Increment the view count of the found URL for tracking the top 100 URL's
-            $foundURL->increment('visit_count');
 
             return Redirect::to($foundURL->full_url, 302);
         }

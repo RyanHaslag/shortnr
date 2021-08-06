@@ -43,8 +43,6 @@ export default {
     methods: {
         timer() {
             if(this.countdown > 0) {
-
-
                 setTimeout(() => {
                     this.countdown -= 1
                     this.timer()
